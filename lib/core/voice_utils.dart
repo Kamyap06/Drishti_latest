@@ -15,6 +15,7 @@ enum VoiceIntent {
   currencyDetection,
   readText,
   expiryDetection,
+  medicineReader,
   openSettings,
   unknown,
 }
@@ -252,6 +253,17 @@ class VoiceUtils {
         t.contains("एक्सपायरी डेट") ||
         t.contains("एक्सपायर")) {
       return VoiceIntent.expiryDetection;
+    }
+
+    if (t.contains("medicine") ||
+        t.contains("dawa") ||
+        t.contains("davai") ||
+        t.contains("aushadh") ||
+        t.contains("दवा") ||
+        t.contains("दवाई") ||
+        t.contains("औषध") ||
+        t.contains("मेडिसिन")) {
+      return VoiceIntent.medicineReader;
     }
 
     if (t.contains("settings") ||

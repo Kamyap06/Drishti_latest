@@ -285,17 +285,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     if (!voice.isAwaitingFieldInput) return;
 
     final normalized = VoiceUtils.normalizeToEnglish(text);
-    if (normalized.isEmpty) return; // Reject partials/Devanagari junk
 
     // Issue 5: Command-word guard — prevent known commands from reaching field storage.
-    const commandWords = [
-      'nondani', 'nond', 'register', 'registar', 'login',
-      'back', 'mage', 'wapas', 'parat', 'punha',
-      'retry', 'next', 'pudhe', 'aage',
-    ];
-    if (commandWords.any((w) => normalized == w || normalized.contains(w))) {
-      debugPrint('[RegistrationScreen] Field capture rejected command word: $normalized');
-      return;
+    final isPasswordStep = (_currentStep == RegStep.password);
+    
+    if (!isPasswordStep) {
+      if (normalized.isEmpty) return; // Reject partials/Devanagari junk for usernames
+      
+      const commandWords = [
+        'nondani', 'nond', 'register', 'registar', 'login',
+        'back', 'mage', 'wapas', 'parat', 'punha',
+        'retry', 'next', 'pudhe', 'aage',
+      ];
+      if (commandWords.any((w) => normalized == w || normalized.contains(w))) {
+        debugPrint('[RegistrationScreen] Field capture rejected command word: $normalized');
+        return;
+      }
     }
 
     switch (_currentStep) {
@@ -311,7 +316,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       case RegStep.password:
         // Issue 2: Use CredentialNormalizer for deterministic cross-language password
         final sanitizedPassword = CredentialNormalizer.sanitize(text);
-        debugPrint('[CREDENTIAL] Stored password hash input: ${CredentialNormalizer.sanitize(text)}');
+        debugPrint('[CREDENTIAL] Stored password hash input: $sanitizedPassword');
         if (sanitizedPassword.length < 6) {
           final lang = Provider.of<LanguageService>(context, listen: false).currentLocale.languageCode;
           _speakPrompt(RegistrationFeedbackFormatter.formatPasswordWeak(lang), lang);
@@ -435,7 +440,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   style: const TextStyle(fontSize: 32, color: Colors.blue),
                 ),
               if (_currentStep == RegStep.biometric)
-                const Icon(Icons.fingerprint, size: 80, color: Colors.green),
+                const Center(
+                  child: Icon(Icons.fingerprint, size: 80, color: Colors.green),
+                ),
 
               const SizedBox(height: 60),
               if (_isProcessing) const CircularProgressIndicator(),

@@ -247,20 +247,25 @@ class _LoginScreenState extends State<LoginScreen> {
     if (voice.isTtsSpeaking || _isSpeaking) return;
     if (!voice.isAwaitingFieldInput) return;
 
-    // Normalize for storage
+    // Normalize for storage (Devanagari to empty string is okay for username/commands, but bad for passwords)
     final normalized = VoiceUtils.normalizeToEnglish(text);
-    if (normalized.isEmpty) return; // Strict rejection of junk/Devanagari
 
     // Issue 5: Command-word guard — second line of defence.
-    // These words must never be stored as field values regardless of intent detection.
-    const commandWords = [
-      'nondani', 'nond', 'register', 'registar', 'login',
-      'back', 'mage', 'wapas', 'parat', 'punha',
-      'retry', 'next', 'pudhe', 'aage',
-    ];
-    if (commandWords.any((w) => normalized == w || normalized.contains(w))) {
-      debugPrint('[LoginScreen] Field capture rejected command word: $normalized');
-      return;
+    // Only apply command word guard for non-password steps
+    final isPasswordStep = (_step == 1);
+    
+    if (!isPasswordStep) {
+      if (normalized.isEmpty) return; // Strict rejection of junk/Devanagari for usernames
+      
+      const commandWords = [
+        'nondani', 'nond', 'register', 'registar', 'login',
+        'back', 'mage', 'wapas', 'parat', 'punha',
+        'retry', 'next', 'pudhe', 'aage',
+      ];
+      if (commandWords.any((w) => normalized == w || normalized.contains(w))) {
+        debugPrint('[LoginScreen] Field capture rejected command word: $normalized');
+        return;
+      }
     }
 
     if (_mode == AuthMode.login) {
@@ -273,7 +278,12 @@ class _LoginScreenState extends State<LoginScreen> {
       } else if (_step == 1) {
         // Issue 2: Use CredentialNormalizer for deterministic cross-language password
         final sanitizedPassword = CredentialNormalizer.sanitize(text);
-        debugPrint('[CREDENTIAL] Compared password hash input: ${CredentialNormalizer.sanitize(text)}');
+        if (sanitizedPassword.length < 6) {
+          final lang = Provider.of<LanguageService>(context, listen: false).currentLocale.languageCode;
+          _speakPrompt("Password too short", lang);
+          return;
+        }
+        debugPrint('[CREDENTIAL] Compared password hash input: $sanitizedPassword');
         setState(() {
           _passwordController.text = sanitizedPassword;
           _step = 2;
@@ -396,18 +406,38 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             if (_step == 2)
               Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.fingerprint, size: 80, color: Colors.blue),
-                    const SizedBox(height: 20),
-                    Text(
-                      _biometricAuthenticated
-                          ? "Authenticated"
-                          : "Waiting for Biometrics...",
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ],
+                child: Center(  // ✅ FULLY CENTERED
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.fingerprint,
+                        size: 120,
+                        color: _biometricAuthenticated ? Colors.greenAccent : Colors.blueAccent,
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        _biometricAuthenticated ? "Authenticated" : "Waiting for Fingerprint...",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: _biometricAuthenticated ? Colors.greenAccent : Colors.white70,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        "Place your finger on the sensor",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 15, color: Colors.white38),
+                      ),
+                      if (_isBiometricPending) ...[
+                        const SizedBox(height: 30),
+                        const CircularProgressIndicator(color: Colors.cyanAccent),
+                      ],
+                    ],
+                  ),
                 ),
               ),
             if (_step < 2) const Spacer(),

@@ -10,6 +10,7 @@ enum ActiveFeature {
   currencyDetection,
   imageSpeech,
   expiryDetection,
+  medicineReader,
   settings,
   none,
 }
@@ -220,6 +221,11 @@ class AppInteractionController extends ChangeNotifier {
       confirmEn = "Opening Expiry Date Reader";
       confirmHi = "तारीख जांच खोल रहे हैं";
       confirmMr = "तारीख तपासणी उघडत आहे";
+    } else if (intent == VoiceIntent.medicineReader) {
+      route = '/medicine_reader';
+      confirmEn = "Opening Medicine Reader";
+      confirmHi = "दवा जांच खोल रहे हैं";
+      confirmMr = "औषध तपासणी उघडत आहे";
     }
     if (route.isNotEmpty) {
       setBusy(true);

@@ -15,6 +15,7 @@ import 'presentation/screens/object_detection_screen.dart';
 import 'presentation/screens/currency_detection_screen.dart';
 import 'presentation/screens/image_to_speech_screen.dart';
 import 'presentation/screens/expiry_date_screen.dart';
+import 'presentation/screens/medicine_reader_screen.dart';
 import 'presentation/screens/settings_screen.dart';
 import 'presentation/screens/registration_screen.dart';
 import 'presentation/screens/permissions_screen.dart';
@@ -88,6 +89,7 @@ class MyApp extends StatelessWidget {
           case '/currency_detection': page = const CurrencyDetectionScreen(); break;
           case '/image_to_speech': page = const ImageToSpeechScreen(); break;
           case '/expiry_date': page = const ExpiryDateScreen(); break;
+          case '/medicine_reader': page = const MedicineReaderScreen(); break;
           case '/settings': page = const SettingsScreen(); break;
           case '/registration': page = const RegistrationScreen(); break;
           default: page = const SplashScreen();

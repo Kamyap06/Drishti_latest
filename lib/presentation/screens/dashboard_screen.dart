@@ -68,9 +68,9 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
         listen: false,
       ).currentLocale.languageCode;
 
-      String prompt = "Please say a command. You can scan objects, check money, read text, check expiry, or open settings.";
-      if (lang == 'hi') prompt = "कृपया कमांड बोलें। आप चीज़ें पहचान सकते हैं, नोट की जाँच कर सकते हैं, लिखा हुआ पढ़ सकते हैं, एक्सपायरी डेट चेक कर सकते हैं, या सेटिंग्स खोल सकते हैं।";
-      if (lang == 'mr') prompt = "कृपया कमांड सांगा. तुम्ही वस्तू ओळखू शकता, नोट तपासू शकता, मजकूर वाचू शकता, एक्सपायरी डेट तपासू शकता, किंवा सेटिंग्ज उघडू शकता.";
+      String prompt = "Please say a command. You can scan objects, check money, read text, check expiry, read medicine label, or open settings.";
+      if (lang == 'hi') prompt = "कृपया कमांड बोलें। आप चीज़ें पहचान सकते हैं, नोट की जाँच कर सकते हैं, लिखा हुआ पढ़ सकते हैं, एक्सपायरी डेट चेक कर सकते हैं, दवा पढ़ सकते हैं, या सेटिंग्स खोल सकते हैं।";
+      if (lang == 'mr') prompt = "कृपया कमांड सांगा. तुम्ही वस्तू ओळखू शकता, नोट तपासू शकता, मजकूर वाचू शकता, एक्सपायरी डेट तपासू शकता, औषध वाचू शकता, किंवा सेटिंग्ज उघडू शकता.";
 
       await tts.speak(prompt, languageCode: lang);
     });
@@ -181,6 +181,20 @@ class _DashboardScreenState extends State<DashboardScreen> with RouteAware {
                               listen: false,
                             ).navigatorKey.currentState?.pushNamed(
                               '/expiry_date',
+                            ),
+                      ),
+                      const SizedBox(height: 8),
+                      _buildGridCard(
+                        context,
+                        "Medicine\nReader",
+                        Icons.medical_services,
+                        [Colors.deepOrangeAccent, Colors.orange],
+                        () =>
+                            Provider.of<AppInteractionController>(
+                              context,
+                              listen: false,
+                            ).navigatorKey.currentState?.pushNamed(
+                              '/medicine_reader',
                             ),
                       ),
                       const SizedBox(height: 8),

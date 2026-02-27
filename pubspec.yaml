@@ -1,5 +1,5 @@
-name: drishti
-description: "A new Flutter project."
+name: Drishti
+description: "Drishti AI - Voice assistant for visually impaired users"
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -58,3 +58,7 @@ flutter:
     - assets/models/yolov8s.onnx
     - assets/labels/coco_labels.txt
     - assets/images/
+    - assets/images/college_logo.png
+    - assets/icon/app_logo.png
+    - assets/icon/app_icon.jpeg
+    - assets/icon/
