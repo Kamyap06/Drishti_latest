@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "339784943778",
+    "project_id": "drishti-119d8",
+    "storage_bucket": "drishti-119d8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:339784943778:android:948b25e41982203ec82ffb",
+        "android_client_info": {
+          "package_name": "com.example.drishti"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdyO-_uKnJnp7KmqVrl-0iQ2DDDQ88q-E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
